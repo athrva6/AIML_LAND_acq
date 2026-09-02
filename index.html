@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LandGuard AI — Predictive Land Acquisition Analytics</title>
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#687386;--line:#e6eaf0;
+  --primary:#2457d6;--primary2:#173f9f;--green:#16a673;--amber:#e79b17;--red:#dc3e4d;
+  --sidebar:#101a31;--sidebar2:#172542;--shadow:0 10px 30px rgba(24,42,80,.08)
+}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{display:flex;min-height:100vh}.sidebar{width:250px;background:var(--sidebar);color:#dbe5ff;padding:22px 15px;position:fixed;inset:0 auto 0 0}
+.brand{display:flex;gap:11px;align-items:center;padding:5px 10px 25px;font-weight:800;font-size:19px}.logo{width:38px;height:38px;border-radius:11px;background:#2e6af2;display:grid;place-items:center;color:white;font-weight:900}
+.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#aebbd6;text-align:left;padding:12px 13px;border-radius:9px;font-size:14px;cursor:pointer}.nav button.active,.nav button:hover{background:var(--sidebar2);color:white}
+.side-note{position:absolute;bottom:20px;left:18px;right:18px;padding:13px;border:1px solid #293756;border-radius:12px;color:#9eacc8;font-size:11px;line-height:1.5}
+main{margin-left:250px;width:calc(100% - 250px);padding:28px 34px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.title h1{margin:0;font-size:26px}.title p{margin:5px 0;color:var(--muted);font-size:13px}.status{display:flex;gap:10px;align-items:center}.pill{background:#eaf8f3;color:#137b58;padding:7px 10px;border-radius:99px;font-size:12px;font-weight:700}.user{background:white;border:1px solid var(--line);padding:9px 12px;border-radius:9px;font-size:12px}
+.page{display:none}.page.active{display:block}.grid{display:grid;gap:18px}.kpis{grid-template-columns:repeat(4,1fr)}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:19px;box-shadow:var(--shadow)}.kpi-label{color:var(--muted);font-size:12px}.kpi{font-size:27px;font-weight:800;margin:8px 0}.trend{font-size:11px;color:var(--green)}.danger{color:var(--red)}.warn{color:var(--amber)}
+.two{grid-template-columns:1.25fr .75fr;margin-top:18px}.three{grid-template-columns:repeat(3,1fr);margin-top:18px}
+.card h3{margin:0 0 14px;font-size:15px}.bar{height:10px;background:#edf0f5;border-radius:20px;overflow:hidden;margin:8px 0 14px}.bar span{display:block;height:100%;border-radius:20px}.blue{background:var(--primary)}.redbg{background:var(--red)}.amberbg{background:var(--amber)}.greenbg{background:var(--green)}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.legend{font-size:11px;color:var(--muted);display:flex;gap:15px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:12px}.table th,.table td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}.table th{color:var(--muted);font-weight:600}.risk{padding:5px 9px;border-radius:99px;font-size:10px;font-weight:800}.critical{background:#ffe8eb;color:#bd2637}.high{background:#fff1d7;color:#9a6200}.medium{background:#e9f0ff;color:#315bb7}.low{background:#e6f7f1;color:#137b58}
+button.primary{background:var(--primary);color:white;border:0;border-radius:9px;padding:11px 16px;font-weight:700;cursor:pointer}.primary:hover{background:var(--primary2)}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:6px}.field input,.field select{width:100%;padding:11px;border:1px solid #d9dee8;border-radius:8px;background:white}.full{grid-column:1/-1}
+.result{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:18px;background:#fbfcff}.score{font-size:45px;font-weight:900}.meter{height:13px;border-radius:20px;background:#edf0f5;overflow:hidden}.meter i{display:block;height:100%;width:0;background:var(--red);transition:width .7s}
+.factor{display:flex;align-items:center;gap:10px;margin:12px 0}.factor span{width:145px;font-size:11px}.factor .bar{flex:1;margin:0}.recommend{padding:12px;background:#eef5ff;border-left:3px solid var(--primary);font-size:12px;margin-top:10px}
+.section-head{margin:8px 0 18px}.section-head h2{margin:0 0 5px}.section-head p{margin:0;color:var(--muted);font-size:13px}
+.table-card{margin-top:18px}.scope td:first-child,.tech td:first-child{font-weight:700;width:22%}
+.hero{background:linear-gradient(120deg,#132b5c,#2457d6);color:white;border-radius:16px;padding:26px;margin-bottom:18px}.hero h2{margin:0 0 8px;font-size:22px}.hero p{margin:0;color:#dce7ff;max-width:850px;line-height:1.6;font-size:13px}
+.map{height:300px;border-radius:12px;background:
+radial-gradient(circle at 25% 30%,#7eb1e8 0 2px,transparent 3px),
+radial-gradient(circle at 63% 57%,#dc3e4d 0 4px,transparent 5px),
+radial-gradient(circle at 75% 35%,#e79b17 0 4px,transparent 5px),
+linear-gradient(135deg,#e8f1e6,#d9e8f4);position:relative;overflow:hidden}
+.map:before{content:"";position:absolute;inset:0;background:linear-gradient(35deg,transparent 47%,rgba(36,87,214,.15) 48%,transparent 49%),linear-gradient(120deg,transparent 54%,rgba(36,87,214,.12) 55%,transparent 56%);background-size:180px 150px}
+.map-label{position:absolute;background:white;padding:6px 9px;border-radius:7px;font-size:10px;box-shadow:0 3px 10px #0002}
+.footer-note{font-size:11px;color:var(--muted);margin-top:18px}
+@media(max-width:1000px){.sidebar{width:205px}main{margin-left:205px;width:calc(100% - 205px);padding:20px}.kpis,.three{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.sidebar{position:static;width:100%;height:auto}.app{display:block}.side-note{display:none}main{margin:0;width:100%}.form,.two,.kpis,.three{grid-template-columns:1fr}.top{align-items:flex-start;gap:10px;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">LG</div>LandGuard AI</div>
+  <nav class="nav">
+    <button class="active" data-page="dashboard">▦ Dashboard</button>
+    <button data-page="predict">◉ Predict Delay</button>
+    <button data-page="projects">▤ Projects</button>
+    <button data-page="map">⌖ GIS Risk Map</button>
+    <button data-page="analytics">⌁ Analytics</button>
+    <button data-page="scope">☷ Scope & Technology</button>
+  </nav>
+  <div class="side-note"><b>AI Decision Support</b><br>Predictive monitoring for proactive land acquisition governance.<br><br>Model: XGBoost • Explainable AI • API Ready</div>
+</aside>
+
+<main>
+<header class="top">
+ <div class="title"><h1 id="pageTitle">Predictive Analytics Dashboard</h1><p>Early detection of land acquisition delays across infrastructure projects</p></div>
+ <div class="status"><span class="pill">● System Online</span><span class="user">Administrator ▾</span></div>
+</header>
+
+<section id="dashboard" class="page active">
+ <div class="hero"><h2>Predict delays before they impact project execution.</h2><p>LandGuard AI analyzes acquisition, approvals, compensation, disputes, R&R and possession indicators to prioritize interventions and support evidence-based decisions.</p></div>
+ <div class="grid kpis">
+  <div class="card"><div class="kpi-label">Projects Monitored</div><div class="kpi">1,248</div><div class="trend">↑ 8.4% this quarter</div></div>
+  <div class="card"><div class="kpi-label">High / Critical Risk</div><div class="kpi danger">186</div><div class="trend danger">Needs intervention</div></div>
+  <div class="card"><div class="kpi-label">Avg. Delay Probability</div><div class="kpi">64.8%</div><div class="trend">↓ 3.2% vs last month</div></div>
+  <div class="card"><div class="kpi-label">Potential Delay Avoided</div><div class="kpi">31%</div><div class="trend">Based on interventions</div></div>
+ </div>
+ <div class="grid two">
+  <div class="card"><div class="row"><h3>Risk Distribution</h3><div class="legend"><span><i class="dot" style="background:#dc3e4d"></i>Critical</span><span><i class="dot" style="background:#e79b17"></i>High</span><span><i class="dot" style="background:#2457d6"></i>Medium</span><span><i class="dot" style="background:#16a673"></i>Low</span></div></div>
+   <div style="margin-top:20px"><small>Critical — 42 projects</small><div class="bar"><span class="redbg" style="width:23%"></span></div><small>High — 144 projects</small><div class="bar"><span class="amberbg" style="width:44%"></span></div><small>Medium — 390 projects</small><div class="bar"><span class="blue" style="width:67%"></span></div><small>Low — 672 projects</small><div class="bar"><span class="greenbg" style="width:100%"></span></div></div>
+  </div>
+  <div class="card"><h3>Top Delay Drivers</h3>
+   <div class="factor"><span>Pending approvals</span><div class="bar"><span class="redbg" style="width:89%"></span></div><b>89%</b></div>
+   <div class="factor"><span>Legal disputes</span><div class="bar"><span class="amberbg" style="width:74%"></span></div><b>74%</b></div>
+   <div class="factor"><span>Compensation</span><div class="bar"><span class="blue" style="width:68%"></span></div><b>68%</b></div>
+   <div class="factor"><span>R&R progress</span><div class="bar"><span class="blue" style="width:55%"></span></div><b>55%</b></div>
+   <div class="factor"><span>Documentation</span><div class="bar"><span class="greenbg" style="width:41%"></span></div><b>41%</b></div>
+  </div>
+ </div>
+ <div class="card table-card"><div class="row"><h3>Priority Projects</h3><button class="primary" onclick="showPage('projects')">View all projects</button></div>
+ <div class="table-wrap"><table class="table"><thead><tr><th>Project</th><th>State</th><th>Type</th><th>Land Acquired</th><th>Delay Probability</th><th>Risk</th></tr></thead>
+ <tbody>
+ <tr><td>MH-NH48-021</td><td>Maharashtra</td><td>Highway</td><td>61.9%</td><td>99.7%</td><td><span class="risk critical">CRITICAL</span></td></tr>
+ <tr><td>MH-METRO-114</td><td>Maharashtra</td><td>Metro</td><td>72.4%</td><td>96.4%</td><td><span class="risk critical">CRITICAL</span></td></tr>
+ <tr><td>UP-EXP-083</td><td>Uttar Pradesh</td><td>Expressway</td><td>78.1%</td><td>84.2%</td><td><span class="risk high">HIGH</span></td></tr>
+ <tr><td>KA-RW-045</td><td>Karnataka</td><td>Railway</td><td>82.7%</td><td>71.6%</td><td><span class="risk high">HIGH</span></td></tr>
+ </tbody></table></div></div>
+</section>
+
+<section id="predict" class="page">
+ <div class="section-head"><h2>AI Delay Prediction</h2><p>Enter current project indicators to estimate delay probability and expected delay.</p></div>
+ <div class="card"><div class="form">
+  <div class="field"><label>State</label><select id="state"><option>Maharashtra</option><option>Uttar Pradesh</option><option>Karnataka</option><option>Gujarat</option><option>Rajasthan</option></select></div>
+  <div class="field"><label>Project Type</label><select id="type"><option>Highway</option><option>Metro</option><option>Railway</option><option>Expressway</option><option>Industrial Corridor</option></select></div>
+  <div class="field"><label>Total Land Required (hectares)</label><input id="land" type="number" value="303.1"></div>
+  <div class="field"><label>Land Acquired (%)</label><input id="acq" type="number" value="61.9"></div>
+  <div class="field"><label>Pending Approvals</label><input id="approval" type="number" value="2"></div>
+  <div class="field"><label>Compensation Pending (%)</label><input id="comp" type="number" value="18.6"></div>
+  <div class="field"><label>Affected Families</label><input id="families" type="number" value="142"></div>
+  <div class="field"><label>Displaced Families</label><input id="displaced" type="number" value="46"></div>
+  <div class="field"><label>Ownership Disputes</label><input id="ownership" type="number" value="3"></div>
+  <div class="field"><label>Legal Disputes / Court Stays</label><input id="legal" type="number" value="3"></div>
+  <div class="field"><label>R&R Completed (%)</label><input id="rr" type="number" value="40.8"></div>
+  <div class="field"><label>Land Possession (%)</label><input id="possession" type="number" value="54"></div>
+  <div class="field"><label>Environmental Clearance</label><select id="env"><option>Pending</option><option>Approved</option></select></div>
+  <div class="field"><label>Forest Clearance</label><select id="forest"><option>Pending</option><option>Approved</option></select></div>
+  <div class="full"><button class="primary" onclick="predict()">Run AI Risk Prediction</button></div>
+ </div>
+ <div class="result" id="result" style="display:none">
+  <div class="row"><div><div class="kpi-label">Predicted Delay Probability</div><div class="score" id="score">--</div><div id="level"></div></div><div style="text-align:right"><div class="kpi-label">Estimated Delay</div><div class="score" style="font-size:30px" id="days">-- days</div><div class="kpi-label">Model estimate</div></div></div>
+  <div class="meter" style="margin-top:18px"><i id="meter"></i></div>
+  <h3 style="margin-top:22px">Explainable AI — Contributing Factors</h3>
+  <div id="factors"></div>
+  <h3>Recommended Actions</h3><div id="recommend"></div>
+ </div></div>
+ <div class="footer-note">Demo prediction logic is client-side for UI demonstration. Connect this form to your trained XGBoost/ML API for production predictions.</div>
+</section>
+
+<section id="projects" class="page">
+ <div class="section-head"><h2>Project Monitoring</h2><p>Prioritize projects using predictive risk scores and acquisition progress.</p></div>
+ <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>ID</th><th>State</th><th>Type</th><th>Land (ha)</th><th>Acquired</th><th>Approvals</th><th>Disputes</th><th>Risk</th></tr></thead><tbody>
+ <tr><td>MH-NH48-021</td><td>Maharashtra</td><td>Highway</td><td>303.1</td><td>61.9%</td><td>2</td><td>3</td><td><span class="risk critical">99.7%</span></td></tr>
+ <tr><td>MH-METRO-114</td><td>Maharashtra</td><td>Metro</td><td>184.5</td><td>72.4%</td><td>4</td><td>2</td><td><span class="risk critical">96.4%</span></td></tr>
+ <tr><td>UP-EXP-083</td><td>Uttar Pradesh</td><td>Expressway</td><td>512.8</td><td>78.1%</td><td>3</td><td>4</td><td><span class="risk high">84.2%</span></td></tr>
+ <tr><td>KA-RW-045</td><td>Karnataka</td><td>Railway</td><td>221.6</td><td>82.7%</td><td>1</td><td>2</td><td><span class="risk high">71.6%</span></td></tr>
+ <tr><td>GJ-IC-019</td><td>Gujarat</td><td>Industrial Corridor</td><td>690.3</td><td>91.2%</td><td>1</td><td>0</td><td><span class="risk low">18.9%</span></td></tr>
+ </tbody></table></div></div>
+</section>
+
+<section id="map" class="page">
+ <div class="section-head"><h2>GIS Risk Map</h2><p>Visualize high-risk acquisition projects and prioritize field intervention.</p></div>
+ <div class="card"><div class="map"><span class="map-label" style="left:19%;top:25%">Medium — Pune region</span><span class="map-label" style="left:56%;top:51%">Critical — Project MH-NH48-021</span><span class="map-label" style="left:68%;top:29%">High — Metro corridor</span></div><div class="legend" style="margin-top:12px"><span>● Critical</span><span>● High</span><span>● Medium</span><span>● Low</span></div></div>
+</section>
+
+<section id="analytics" class="page">
+ <div class="section-head"><h2>Analytics & Trends</h2><p>State-wise and project-type insights for policy and resource allocation.</p></div>
+ <div class="grid three">
+  <div class="card"><h3>Maharashtra</h3><div class="kpi">78.4%</div><div class="kpi-label">Average delay probability</div><div class="bar"><span class="redbg" style="width:78%"></span></div></div>
+  <div class="card"><h3>Uttar Pradesh</h3><div class="kpi">69.1%</div><div class="kpi-label">Average delay probability</div><div class="bar"><span class="amberbg" style="width:69%"></span></div></div>
+  <div class="card"><h3>Karnataka</h3><div class="kpi">54.7%</div><div class="kpi-label">Average delay probability</div><div class="bar"><span class="blue" style="width:55%"></span></div></div>
+ </div>
+ <div class="card" style="margin-top:18px"><h3>Delay Probability Trend — Last 6 Months</h3><svg viewBox="0 0 900 230" width="100%" height="230" preserveAspectRatio="none"><polyline points="20,180 170,160 320,145 470,130 620,105 770,88 880,70" fill="none" stroke="#2457d6" stroke-width="4"/><polyline points="20,180 170,160 320,145 470,130 620,105 770,88 880,70 880,210 20,210" fill="rgba(36,87,214,.08)" stroke="none"/><text x="20" y="225" font-size="11">Apr</text><text x="170" y="225" font-size="11">May</text><text x="320" y="225" font-size="11">Jun</text><text x="470" y="225" font-size="11">Jul</text><text x="620" y="225" font-size="11">Aug</text><text x="770" y="225" font-size="11">Sep</text></svg></div>
+</section>
+
+<section id="scope" class="page">
+ <div class="section-head"><h2>Scope of Study & Technology</h2><p>Solution architecture aligned with the proposed problem statement and expected outcomes.</p></div>
+ <div class="card table-card"><h3>Scope of Study</h3><div class="table-wrap"><table class="table scope"><thead><tr><th>Scope Area</th><th>What the system covers</th></tr></thead><tbody>
+ <tr><td>Project Risk Prediction</td><td>Predict delay probability, expected delay duration and lifecycle-stage risk.</td></tr>
+ <tr><td>Risk Factors</td><td>Approvals, compensation, legal/ownership disputes, documentation, R&R, possession and historical delays.</td></tr>
+ <tr><td>Geospatial Monitoring</td><td>GIS-enabled visualization of project locations and high-risk clusters.</td></tr>
+ <tr><td>Explainable AI</td><td>Show the major factors influencing each prediction so administrators can understand and act.</td></tr>
+ <tr><td>Decision Support</td><td>Rank projects, recommend interventions and help allocate administrative resources.</td></tr>
+ <tr><td>Continuous Learning</td><td>Retrain/update models as completed and new project records become available.</td></tr>
+ <tr><td>Integration & Security</td><td>API-based integration, role-based access, audit trails and secure data handling.</td></tr>
+ </tbody></table></div></div>
+ <div class="card table-card"><h3>Suggested Components-wise Technology</h3><div class="table-wrap"><table class="table tech"><thead><tr><th>Component</th><th>Suggested Technology</th><th>Purpose</th></tr></thead><tbody>
+ <tr><td>Frontend</td><td>React.js / Next.js, HTML, CSS</td><td>Responsive dashboards, forms and administrative workflows.</td></tr>
+ <tr><td>Backend & APIs</td><td>Python FastAPI / Node.js</td><td>Business logic, prediction APIs and system integration.</td></tr>
+ <tr><td>ML Engine</td><td>Python, XGBoost, Scikit-learn</td><td>Delay prediction, risk classification and model evaluation.</td></tr>
+ <tr><td>Explainable AI</td><td>SHAP</td><td>Feature contribution and transparent prediction explanations.</td></tr>
+ <tr><td>Database</td><td>PostgreSQL + PostGIS</td><td>Project, workflow, historical and geospatial data.</td></tr>
+ <tr><td>GIS</td><td>Leaflet / Mapbox</td><td>Interactive project maps and risk hotspots.</td></tr>
+ <tr><td>Visualization</td><td>Chart.js / Recharts</td><td>Risk trends, comparative analytics and KPIs.</td></tr>
+ <tr><td>Authentication</td><td>JWT + RBAC / OAuth 2.0</td><td>Secure role-based stakeholder access.</td></tr>
+ <tr><td>Notifications</td><td>Email / SMS / Push APIs</td><td>Automated alerts for high-risk projects.</td></tr>
+ <tr><td>Deployment</td><td>Docker, AWS / Azure / NIC Cloud</td><td>Containerized, scalable and maintainable deployment.</td></tr>
+ <tr><td>Monitoring</td><td>Prometheus + Grafana</td><td>Application, API and model monitoring.</td></tr>
+ </tbody></table></div></div>
+</section>
+</main>
+</div>
+<script>
+const pages=[...document.querySelectorAll('.page')];
+function showPage(id){pages.forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+const titles={dashboard:'Predictive Analytics Dashboard',predict:'AI Delay Prediction',projects:'Project Monitoring',map:'GIS Risk Map',analytics:'Analytics & Trends',scope:'Scope of Study & Technology'};document.getElementById('pageTitle').textContent=titles[id]||'LandGuard AI';}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+function n(id){return parseFloat(document.getElementById(id).value)||0}
+function predict(){
+ let approval=n('approval'),comp=n('comp'),legal=n('legal'),ownership=n('ownership'),rr=n('rr'),acq=n('acq'),pos=n('possession'),families=n('families'),env=document.getElementById('env').value,forest=document.getElementById('forest').value;
+ let score=25 + approval*7 + comp*.75 + legal*7 + ownership*3 + Math.max(0,55-rr)*.35 + Math.max(0,75-acq)*.35 + Math.max(0,70-pos)*.2 + Math.min(15,families/40) + (env==='Pending'?8:0) + (forest==='Pending'?5:0);
+ score=Math.max(4,Math.min(99.97,score));
+ let days=Math.round(35 + score*2.8 + legal*14 + approval*9);
+ document.getElementById('result').style.display='block';document.getElementById('score').textContent=score.toFixed(1)+'%';document.getElementById('days').textContent=days+' days';
+ document.getElementById('meter').style.width=score+'%';
+ let level=score>=85?'CRITICAL':score>=65?'HIGH':score>=40?'MEDIUM':'LOW';
+ document.getElementById('level').innerHTML='<span class="risk '+(level==='CRITICAL'?'critical':level==='HIGH'?'high':level==='MEDIUM'?'medium':'low')+'">'+level+'</span>';
+ const factors=[['Pending approvals',Math.min(99,approval*18)],['Legal / court disputes',Math.min(99,legal*20)],['Compensation pending',Math.min(99,comp*2.8)],['Land acquisition progress',Math.min(99,100-acq)],['R&R gap',Math.min(99,100-rr)],['Possession gap',Math.min(99,100-pos)]];
+ document.getElementById('factors').innerHTML=factors.sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>'<div class="factor"><span>'+x[0]+'</span><div class="bar"><span class="'+(x[1]>70?'redbg':x[1]>45?'amberbg':'blue')+'" style="width:'+x[1]+'%"></span></div><b>'+Math.round(x[1])+'%</b></div>').join('');
+ let rec=[];if(approval>0)rec.push('Escalate pending approvals and establish an inter-departmental resolution deadline.');if(legal>0||ownership>0)rec.push('Create a legal/ownership dispute task force and prioritize court-stay cases.');if(comp>10)rec.push('Accelerate compensation verification and disbursement for affected landowners.');if(rr<60)rec.push('Prioritize rehabilitation and resettlement actions for displaced families.');if(acq<75)rec.push('Create a parcel-level acquisition plan with weekly progress monitoring.');if(!rec.length)rec.push('Continue routine monitoring; no immediate high-priority intervention detected.');
+ document.getElementById('recommend').innerHTML=rec.map(x=>'<div class="recommend">'+x+'</div>').join('');
+}
+</script>
+</body>
+</html>
